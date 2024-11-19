@@ -1,1 +1,2 @@
-export { Stepper } from "./stepper";
+export { Stepper } from "./Stepper";
+export { Button } from "./Button";

@@ -14,7 +14,7 @@ export const Stepper = ({ steps, currentStep = 1 }: any) => {
       </ol>
 
       <div className="p-10">
-        {steps.find((step, key) => key + 1 === currentStep).element}
+        {steps.find((step: any, key: number) => key + 1 === currentStep).element}
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import ValidatePhoneNumber from "../pages/ValidatePhoneNumber";
+import Login from "~/pages/Login";
 
 const router = createBrowserRouter([
   {
@@ -10,7 +10,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/entrar",
-    element: <ValidatePhoneNumber />
+    element: <Login />
   }
 ])
 

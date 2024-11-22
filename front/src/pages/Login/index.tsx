@@ -12,19 +12,31 @@ const Login = () => {
     userName: "",
   }
 
-  const [currentStep, setCurrentStep] = useState(1) 
+  const [currentStep, setCurrentStep] = useState(1)
+
+  const [userId, setUserId] = useState<null | number>(null)
 
   const sendCode = async (phone: string) => {
     const response = await axios.post("http://localhost:8000/api/requestVerificationCode", {
-      phone_number: `+55${phone}`
+      phone_number: phone
     });
   }
 
   const validateCode = async (phone: string, code: string) => {
     const response = await axios.post("http://localhost:8000/api/confirmVerificationCode", {
-      phone_number: `+55${phone}`,
+      phone_number: phone,
       code: code,
     });
+
+    setUserId(response.data.return?.user?.id)
+    // Obter token no retorno da request e guardar;
+  }
+
+  const updateAccountInfo = async (phone: string, name: string) => {
+    const response = await axios.post(`http://localhost:8000/api/users/${userId}`, {
+      name: name,
+      phone_number: phone
+    })
   }
 
   const handleSubmit = async (values: any) => {
@@ -43,7 +55,7 @@ const Login = () => {
     }
 
     if (currentStep === 3) {
-      alert("Fazer request para atualizar dados do usuário")
+      await updateAccountInfo(values.phoneNumber, values.userName)
 
       setCurrentStep(currentStep + 1);
       return;

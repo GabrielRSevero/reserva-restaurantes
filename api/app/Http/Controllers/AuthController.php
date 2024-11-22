@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\RequestVerificationCodeRequest;
 use App\Http\Requests\ConfirmVerificationCodeRequest;
+use App\Models\User;
 use App\Services\TwilioService;
 
 class AuthController extends Controller
@@ -35,7 +36,16 @@ class AuthController extends Controller
             $response = $twilio->checkVerificationCode($request->phone_number, $request->code);
 
             if ($response && $response->status === "approved") {
-                return response()->json(["success" => true, "message" => "Código de verificação validado com sucesso para o número $request->phone_number."], 200);
+
+                $user = User::where("phone_number", $request->phone_number)->first();
+
+                if (!$user) {
+                    $user = User::create(["name" => "", "phone_number" => $request->phone_number]);
+                }
+
+                $token = $user->createToken('user-token')->plainTextToken;
+
+                return response()->json(["success" => true, "message" => "Código de verificação validado com sucesso para o número $request->phone_number.", "return" => ["token" => $token, "user" => $user]], 200);
             }
     
             return response()->json(["success" => false, "message" => "Falha ao validar o código de verificação, tente novamente mais tarde."], 500);

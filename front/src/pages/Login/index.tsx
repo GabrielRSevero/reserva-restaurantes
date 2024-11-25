@@ -1,45 +1,52 @@
 import { Form, Formik } from "formik";
-import { RiSmartphoneLine } from "react-icons/ri";
 import { useState } from "react";
-import { Stepper, Button } from "~/components";
-import axios from "axios";
+import { Stepper, Box } from "~/components";
+import { SendCode } from "./SendCode";
+import { ValidateCode } from "./ValidateCode";
+import { AccountInfo } from "./AccountInfo";
+import api from "~/services/api";
+
+export interface IFormValues {
+  phoneNumber: string
+  code: string
+  userName: string
+}
 
 const Login = () => {
-
-  const initialValues = {
-    phoneNumber: "",
-    code: "",
-    userName: "",
-  }
-
   const [currentStep, setCurrentStep] = useState(1)
 
-  const [userId, setUserId] = useState<null | number>(null)
+  const [user, setUser] = useState<any>(null)
+
+  const initialValues: IFormValues = {
+    phoneNumber: "",
+    code: "",
+    userName: user?.name || "",
+  }
 
   const sendCode = async (phone: string) => {
-    const response = await axios.post("http://localhost:8000/api/requestVerificationCode", {
+    const response = await api.post("/requestVerificationCode", {
       phone_number: phone
     });
   }
 
   const validateCode = async (phone: string, code: string) => {
-    const response = await axios.post("http://localhost:8000/api/confirmVerificationCode", {
+    const response = await api.post("/confirmVerificationCode", {
       phone_number: phone,
       code: code,
     });
 
-    setUserId(response.data.return?.user?.id)
+    setUser(response.data.return?.user) 
     // Obter token no retorno da request e guardar;
   }
 
   const updateAccountInfo = async (phone: string, name: string) => {
-    const response = await axios.post(`http://localhost:8000/api/users/${userId}`, {
+    const response = await api.post(`/users/${user?.id}`, {
       name: name,
       phone_number: phone
     })
   }
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: IFormValues) => {
     if (currentStep === 1) {
       await sendCode(values.phoneNumber)
 
@@ -63,85 +70,33 @@ const Login = () => {
   }
 
   return (
-    <div className="h-full flex justify-center items-center bg-gradient-to-r from-pink-500 to-rose-500">
-      <div className="flex flex-col gap-4">
-          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-            {({values, isSubmitting, handleChange}) => (
-              <Form>
-                <Stepper currentStep={currentStep} steps={
-                  [
-                    { 
-                      name: "Entrar com telefone",
-                      details: "Enviar código por SMS",
-                      element: (
-                        <div className="flex flex-col gap-4">
-                          <h1 className="text-stone-100 text-2xl text-center">Entrar com número de telefone</h1>
-
-                          <div className="flex">
-                            <div className="flex justify-center items-center bg-gradient-to-r from-violet-600 to-indigo-600 w-14 rounded-bl-md rounded-tl-md">
-                              <RiSmartphoneLine className="w-7 h-7 text-white" />
-                            </div>
-                            <input 
-                              className="p-2 outline-none bg-white/20 placeholder:text-white w-full rounded-br-md rounded-tr-md"
-                              type="tel"
-                              placeholder="(00) 00000-0000"
-                              value={values.phoneNumber}
-                              onChange={handleChange("phoneNumber")}
-                            />
-                          </div>
-                          <Button type="submit" loading={isSubmitting}>Enviar código</Button>
-                        </div>
-                      )
-                    },
-                    { 
-                      name: "Validar código",
-                      details: "Validar código",
-                      element: (
-                        <div className="flex flex-col gap-4">
-                          <h1 className="text-stone-100 text-2xl text-center">Informar código</h1>
-
-                          <div className="flex">
-                            <input 
-                              className="p-2 outline-none bg-white/20 placeholder:text-white w-full rounded-md"
-                              type="text"
-                              placeholder="XXXXXX"
-                              value={values.code}
-                              onChange={handleChange("code")}
-                            />
-                          </div>
-                          <Button type="submit" loading={isSubmitting}>Validar código</Button>
-                        </div>
-                      )
-                    },
-                    { 
-                      name: "Informações da conta",
-                      details: "Alterar informações",
-                      element: (
-                        <div className="flex flex-col gap-4">
-                          <h1 className="text-stone-100 text-2xl text-center">Suas informações</h1>
-
-                          <div className="flex flex-col gap-1">
-                            <label htmlFor="name" className="text-white">Nome de usuário:</label>
-                            <input
-                              className="p-2 outline-none bg-white/20 placeholder:text-white w-full rounded-md"
-                              type="text"
-                              id="name"
-                              placeholder="Informe seu nome"
-                              value={values.userName}
-                              onChange={handleChange("userName")}
-                            />
-                          </div>
-                          <Button type="submit" loading={isSubmitting}>Salvar e continuar</Button>
-                        </div>
-                      )
-                    }
-                  ]} 
-                />
-              </Form>
-            )}
-          </Formik>
-      </div>
-    </div>
+    <Box className="h-full flex justify-center items-center bg-gradient-to-r from-pink-500 to-rose-500">
+      <Box className="flex flex-col gap-4">
+        <Formik enableReinitialize initialValues={initialValues} onSubmit={handleSubmit}>
+          <Form>
+            <Stepper currentStep={currentStep} steps={
+              [
+                { 
+                  name: "Entrar com telefone",
+                  details: "Enviar código por SMS",
+                  element: <SendCode />
+                },
+                { 
+                  name: "Validar código",
+                  details: "Validar código",
+                  element: <ValidateCode />
+                },
+                { 
+                  name: "Informações da conta",
+                  details: "Alterar informações",
+                  element: <AccountInfo />
+                }
+              ]} 
+            />
+          </Form>
+        </Formik>
+      </Box>
+    </Box>
   )
 }
 

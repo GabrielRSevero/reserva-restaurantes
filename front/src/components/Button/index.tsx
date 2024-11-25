@@ -1,6 +1,15 @@
+import { ReactNode } from "react"
 import { Loading } from "../Loading"
+import { Box } from "../Box"
 
-export const Button = ({ type = "button", onClick, children, loading = false }: any) => {
+interface IButton {
+  type?: "button" | "submit"
+  onClick?: () => void
+  children: ReactNode
+  loading?: boolean
+}
+
+export const Button = ({ type = "button", onClick, children, loading = false }: IButton) => {
   return (
     <button 
       type={type} 
@@ -8,10 +17,10 @@ export const Button = ({ type = "button", onClick, children, loading = false }: 
       onClick={onClick}
     >
       {loading ? (
-        <div className="flex justify-center items-center gap-2">
+        <Box className="flex justify-center items-center gap-2">
           <Loading />
           Aguarde...
-        </div>
+        </Box>
       ) : (
         children
       )}

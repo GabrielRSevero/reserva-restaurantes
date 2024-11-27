@@ -5,14 +5,18 @@ import { SendCode } from "./SendCode";
 import { ValidateCode } from "./ValidateCode";
 import { AccountInfo } from "./AccountInfo";
 import api from "~/services/api";
+import { useNavigate } from "react-router-dom";
 
 export interface IFormValues {
   phoneNumber: string
   code: string
   userName: string
+  userId: string
 }
 
 const Login = () => {
+  const navigate = useNavigate()
+
   const [currentStep, setCurrentStep] = useState(1)
 
   const [user, setUser] = useState<any>(null)
@@ -20,7 +24,8 @@ const Login = () => {
   const initialValues: IFormValues = {
     phoneNumber: "",
     code: "",
-    userName: user?.name || "",
+    userName: "",
+    userId: "",
   }
 
   const sendCode = async (phone: string) => {
@@ -35,18 +40,25 @@ const Login = () => {
       code: code,
     });
 
-    setUser(response.data.return?.user) 
-    // Obter token no retorno da request e guardar;
+    if (response.status === 200) {
+      localStorage.setItem("authToken", response.data?.return?.token)
+
+      return response.data.return?.user
+    }
   }
 
-  const updateAccountInfo = async (phone: string, name: string) => {
-    const response = await api.post(`/users/${user?.id}`, {
+  const updateAccountInfo = async (phone: string, name: string, id: string) => {
+    const response = await api.post(`/users/${id}`, {
       name: name,
       phone_number: phone
     })
+
+    if (response.status === 200) {
+      navigate("/")
+    }
   }
 
-  const handleSubmit = async (values: IFormValues) => {
+  const handleSubmit = async (values: IFormValues, setFieldValue: (field: string, value: any) => void) => {
     if (currentStep === 1) {
       await sendCode(values.phoneNumber)
 
@@ -55,14 +67,17 @@ const Login = () => {
     }
 
     if (currentStep === 2) {
-      await validateCode(values.phoneNumber, values.code)
+      const user = await validateCode(values.phoneNumber, values.code)
+
+      setFieldValue("userName", user?.name)
+      setFieldValue("userId", user?.id)
 
       setCurrentStep(currentStep + 1);
       return;
     }
 
     if (currentStep === 3) {
-      await updateAccountInfo(values.phoneNumber, values.userName)
+      await updateAccountInfo(values.phoneNumber, values.userName, values.userId)
 
       setCurrentStep(currentStep + 1);
       return;
@@ -72,7 +87,7 @@ const Login = () => {
   return (
     <Box className="h-full flex justify-center items-center bg-gradient-to-r from-pink-500 to-rose-500">
       <Box className="flex flex-col gap-4">
-        <Formik enableReinitialize initialValues={initialValues} onSubmit={handleSubmit}>
+        <Formik initialValues={initialValues}  onSubmit={(values, { setFieldValue }) => handleSubmit(values, setFieldValue)}>
           <Form>
             <Stepper currentStep={currentStep} steps={
               [

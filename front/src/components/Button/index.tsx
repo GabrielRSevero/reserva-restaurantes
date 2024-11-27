@@ -13,7 +13,7 @@ export const Button = ({ type = "button", onClick, children, loading = false }: 
   return (
     <button 
       type={type} 
-      className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-md py-3 text-white uppercase"
+      className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-md py-3 text-white uppercase w-full"
       onClick={onClick}
     >
       {loading ? (

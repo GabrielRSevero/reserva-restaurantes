@@ -41,6 +41,7 @@ const Login = () => {
     });
 
     if (response.status === 200) {
+      localStorage.setItem("user", response.data?.return?.user?.name)
       localStorage.setItem("authToken", response.data?.return?.token)
 
       return response.data.return?.user

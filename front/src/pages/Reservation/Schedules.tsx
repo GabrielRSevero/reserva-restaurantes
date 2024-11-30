@@ -33,9 +33,14 @@ export const Schedules = () => {
     Object.entries(schedules).filter(([day]) => Object.keys(schedules).indexOf(day) >= Object.keys(schedules).indexOf(currentDayOfWeek))
   )
 
-  const check = (date: string) => {
+  const check = (date: string, day: string) => {
     const scheduleTime = parse(date, "HH:mm", new Date());
-    return isAfter(scheduleTime, new Date());
+
+    if (day === currentDayOfWeek) {
+      return isAfter(scheduleTime, new Date()) 
+    }
+
+    return true
   }
 
   return (
@@ -46,7 +51,7 @@ export const Schedules = () => {
 
           <Box className="grid grid-cols-8 gap-2">
             {schedules[day].map((schedule: string, key: number) => (
-              <Box className={`p-2 text-center rounded-md ${check(schedule) ? "bg-white/10 hover:bg-white/20 cursor-pointer text-white" : "bg-slate-500/10 text-white/50"}`} key={key} onClick={() => setFieldValue("reservation_date", schedule)}>
+              <Box className={`p-2 text-center rounded-md ${check(schedule, day) ? "bg-white/10 hover:bg-white/20 cursor-pointer text-white" : "bg-slate-500/10 text-white/50"}`} key={key} onClick={() => setFieldValue("reservation_date", schedule)}>
                 {schedule}
               </Box>
             ))}

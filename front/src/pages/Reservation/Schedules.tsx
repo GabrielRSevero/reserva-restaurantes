@@ -1,4 +1,4 @@
-import { endOfDay, format, isAfter, parse } from "date-fns";
+import { addDays, endOfDay, format, isAfter, parse } from "date-fns";
 import { useFormikContext } from "formik";
 import { Box } from "~/components"
 import { IFormValues } from ".";
@@ -43,6 +43,19 @@ export const Schedules = () => {
     return true
   }
 
+  const select = (schedule: string, day: string) => {
+
+    let daysKeys = Object.keys(schedules)
+
+    let indexOne = daysKeys.indexOf(currentDayOfWeek) + 1
+    let indexTwo = daysKeys.indexOf(day) + 1
+
+    let daysDif = Math.abs(indexOne - indexTwo)
+
+    setFieldValue("reservation_date", `${format(addDays(new Date(), daysDif), "yyyy-MM-dd")} ${schedule}`)
+    setFieldValue("step", 2)
+  }
+
   return (
     <Box className="grid gap-5">
       {Object.keys(filteredSchedules).map((day, key) => (
@@ -51,7 +64,7 @@ export const Schedules = () => {
 
           <Box className="grid grid-cols-8 gap-2">
             {schedules[day].map((schedule: string, key: number) => (
-              <Box className={`p-2 text-center rounded-md ${check(schedule, day) ? "bg-white/10 hover:bg-white/20 cursor-pointer text-white" : "bg-slate-500/10 text-white/50"}`} key={key} onClick={() => setFieldValue("reservation_date", schedule)}>
+              <Box className={`p-2 text-center rounded-md ${check(schedule, day) ? "bg-white/10 hover:bg-white/20 cursor-pointer text-white" : "bg-slate-500/10 text-white/50"}`} key={key} onClick={() => select(schedule, day)}>
                 {schedule}
               </Box>
             ))}

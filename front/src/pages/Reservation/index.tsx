@@ -1,56 +1,69 @@
-import { format } from "date-fns";
-import { Formik } from "formik"
-import { Form } from "react-router-dom"
+import { Form, Formik } from "formik"
 import { Box, Stepper } from "~/components"
 import { Schedules } from "./Schedules";
 import { TableLayout } from "./TableLayout";
-import { useState } from "react";
+import { Observations } from "./Observations";
+import api from "~/services/api";
 
 export interface IFormValues {
   reservation_date: string
-  table: string
+  step: number
+  table_id: string
+  table_name: string
+  observations: string
 }
 
 const Reservation = () => {
 
-  const [currentStep, setCurrentStep] = useState<number>(1)
-
   const initialValues: IFormValues = {
     reservation_date: "",
-    table: "",
+    step: 1,
+    table_id: "",
+    table_name: "",
+    observations: "",
   }
 
   const handleSubmit = async (values: IFormValues) => {
-    console.log("aaaa")
+    console.log(values)
+
+    const user = localStorage.getItem("user")
+
+    console.log(user)
+
+    const response = await api.post("/reservations", {
+      customer_id: 1,
+      date: values.reservation_date,
+      table_id: 2,
+      obs: "",
+    })
   }
 
   return (
     <Box className="h-full flex flex-col gap-10 justify-center items-center bg-gradient-to-r from-pink-500 to-rose-500">
       <h1 className="text-stone-100 text-2xl text-center">Realizar reserva</h1>
       <Formik enableReinitialize initialValues={initialValues} onSubmit={handleSubmit}>
-        {({ values, isSubmitting, handleChange }) => (
+        {({ values, setFieldValue }) => (
           <Form>
-              <Stepper currentStep={currentStep} steps={[
+              <Stepper currentStep={values.step} steps={[
                 {
                   name: "Escolher horário",
                   details: "Escolha um horário dentro dos horários disponíveis",
-                  onClick: () => setCurrentStep(1),
+                  onClick: () => setFieldValue("step", 1),
                   element: <Schedules />
                 },
                 {
                   name: "Escolher mesa",
                   details: "Utilize nosso layout para selecionar a mesa",
-                  onClick: () => setCurrentStep(2),
+                  onClick: () => setFieldValue("step", 2),
                   element: <TableLayout />
                 },
                 {
                   name: "Observações",
                   details: "Outras informações",
-                  onClick: () => setCurrentStep(3),
+                  onClick: () => setFieldValue("step", 3),
+                  element: <Observations />
                 }
               ]} />
-
-              <button type="button" onClick={() => console.log(values)}>TESTE</button>
           </Form>
         )}
       </Formik>

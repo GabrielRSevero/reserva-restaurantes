@@ -12,3 +12,5 @@ Route::post("/confirmVerificationCode", [AuthController::class, "confirmVerifica
 Route::post("/users/{id}", [UserController::class, "update"]);
 
 Route::post("/reservations", [ReservationController::class, "create"]);
+
+Route::get("/reservations", [ReservationController::class, "get"]);

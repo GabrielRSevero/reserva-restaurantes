@@ -3,6 +3,7 @@ import Home from "~/pages/Home";
 import Login from "~/pages/Login";
 import Reservation from "~/pages/Reservation";
 import ProtectedRoute from "./ProtectedRoute";
+import { Reservations } from "~/pages/Reservations";
 
 const router = createBrowserRouter([
   {
@@ -23,8 +24,16 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <Reservation />
       </ProtectedRoute>
-  )
-  }
+    )
+  },
+  {
+    path: "/reservas",
+    element: (
+      <ProtectedRoute>
+        <Reservations />
+      </ProtectedRoute>
+    )
+  },
 ])
 
 export default router;

@@ -24,17 +24,13 @@ const Reservation = () => {
   }
 
   const handleSubmit = async (values: IFormValues) => {
-    console.log(values)
-
-    const user = localStorage.getItem("user")
-
-    console.log(user)
+    const user = JSON.parse(localStorage.getItem("user") ?? "")
 
     const response = await api.post("/reservations", {
-      customer_id: 1,
+      customer_id: user.id,
       date: values.reservation_date,
-      table_id: 2,
-      obs: "",
+      table_id: values.table_id,
+      obs: values.observations,
     })
   }
 

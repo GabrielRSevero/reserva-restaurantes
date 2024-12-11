@@ -7,13 +7,22 @@ interface IButton {
   onClick?: () => void
   children: ReactNode
   loading?: boolean
+  style?: "primary" | "secondary"
+  className?: string
+  active?: boolean
 }
 
-export const Button = ({ type = "button", onClick, children, loading = false }: IButton) => {
+export const Button = ({ type = "button", onClick, children, loading = false, style = "primary", className, active = true }: IButton) => {
+
+  const styles = {
+    primary: `bg-damask-500 text-damask-100 hover:bg-damask-600`,
+    secondary: `text-damask-800 ${active ? "bg-damask-300 hover:bg-damask-500" : "bg-damask-300/10"}`,
+  }
+
   return (
     <button 
       type={type} 
-      className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-md py-3 text-white uppercase w-full"
+      className={`rounded-sm py-3 uppercase w-full ${styles[style]} ${className}`}
       onClick={onClick}
     >
       {loading ? (

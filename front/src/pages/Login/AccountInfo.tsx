@@ -1,5 +1,6 @@
 import { Box, Button, Input } from "~/components"
 import { useFormikContext } from "formik";
+import { GrLinkNext } from "react-icons/gr";
 import { IFormValues } from ".";
 
 export const AccountInfo = () => {
@@ -7,8 +8,8 @@ export const AccountInfo = () => {
   const { values, handleChange, isSubmitting } = useFormikContext<IFormValues>();
 
   return (
-    <Box className="flex flex-col gap-4">
-      <h1 className="text-stone-100 text-2xl text-center">Suas informações</h1>
+    <Box className="flex flex-col gap-4 pt-10 pb-2 px-2">
+      <h1 className="text-damask-600 text-2xl text-center">Suas informações</h1>
 
       <Input 
         label="Nome de usuário"
@@ -18,7 +19,12 @@ export const AccountInfo = () => {
         onChange={handleChange("userName")}
       />
 
-      <Button type="submit" loading={isSubmitting}>Salvar e continuar</Button>
+      <Box className="grid grid-cols-3">
+        <Button className="col-start-3 flex gap-2 justify-center items-center" style="secondary" type="submit" loading={isSubmitting}>
+          Salvar e continuar
+          <GrLinkNext />
+        </Button>
+      </Box>
     </Box>
   )
 }

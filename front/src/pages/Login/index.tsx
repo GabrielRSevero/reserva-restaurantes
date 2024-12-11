@@ -4,8 +4,8 @@ import { Stepper, Box } from "~/components";
 import { SendCode } from "./SendCode";
 import { ValidateCode } from "./ValidateCode";
 import { AccountInfo } from "./AccountInfo";
-import api from "~/services/api";
 import { useNavigate } from "react-router-dom";
+import api from "~/services/api";
 
 export interface IFormValues {
   phoneNumber: string
@@ -18,8 +18,6 @@ const Login = () => {
   const navigate = useNavigate()
 
   const [currentStep, setCurrentStep] = useState(1)
-
-  const [user, setUser] = useState<any>(null)
 
   const initialValues: IFormValues = {
     phoneNumber: "",
@@ -86,7 +84,7 @@ const Login = () => {
   }
 
   return (
-    <Box className="h-full flex justify-center items-center bg-gradient-to-r from-pink-500 to-rose-500">
+    <Box className="h-full flex justify-center items-center">
       <Box className="flex flex-col gap-4">
         <Formik initialValues={initialValues}  onSubmit={(values, { setFieldValue }) => handleSubmit(values, setFieldValue)}>
           <Form>

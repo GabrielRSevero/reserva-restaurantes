@@ -17,12 +17,12 @@ export const Input = ({ pre, label, name, placeholder, value, type = "text", onC
   return (
     <Box>
       {label && (
-        <label htmlFor={name} className="text-white">{label}:</label>
+        <label htmlFor={name} className="text-damask-500">{label}:</label>
       )}
 
       <Box className="flex">
         {pre && (
-          <Box className="flex justify-center items-center bg-gradient-to-r from-violet-600 to-indigo-600 w-14 rounded-bl-md rounded-tl-md">
+          <Box className="flex justify-center items-center bg-damask-500 w-14">
             {pre}
           </Box>
         )}
@@ -32,7 +32,7 @@ export const Input = ({ pre, label, name, placeholder, value, type = "text", onC
               <input
                 id={name}
                 type={type}
-                className={`p-2 outline-none bg-white/20 placeholder:text-white w-full ${pre ? "rounded-br-md rounded-tr-md" : "rounded-md"}`}
+                className={`p-2 outline-none bg-damask-500 placeholder:text-damask-600 w-full`}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
@@ -46,7 +46,7 @@ export const Input = ({ pre, label, name, placeholder, value, type = "text", onC
           <input
             id={name}
             type={type}
-            className={`p-2 outline-none bg-white/20 placeholder:text-white w-full ${pre ? "rounded-br-md rounded-tr-md" : "rounded-md"}`}
+            className={`p-2 outline-none bg-damask-100 placeholder:text-damask-600 w-full`}
             placeholder={placeholder}
             value={value}
             onChange={onChange}

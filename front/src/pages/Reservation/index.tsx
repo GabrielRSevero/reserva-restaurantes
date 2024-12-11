@@ -4,6 +4,7 @@ import { Schedules } from "./Schedules";
 import { TableLayout } from "./TableLayout";
 import { Observations } from "./Observations";
 import api from "~/services/api";
+import { useNavigate } from "react-router-dom";
 
 export interface IFormValues {
   reservation_date: string
@@ -14,6 +15,8 @@ export interface IFormValues {
 }
 
 const Reservation = () => {
+
+  const navigate = useNavigate()
 
   const initialValues: IFormValues = {
     reservation_date: "",
@@ -32,31 +35,32 @@ const Reservation = () => {
       table_id: values.table_id,
       obs: values.observations,
     })
+
+    if (response.status === 200) {
+      navigate("/reservas")
+    }
   }
 
   return (
-    <Box className="h-full flex flex-col gap-10 justify-center items-center bg-gradient-to-r from-pink-500 to-rose-500">
-      <h1 className="text-stone-100 text-2xl text-center">Realizar reserva</h1>
+    <Box className="h-full flex flex-col gap-10 justify-center items-center">
+      <h1 className="text-damask-800 text-2xl text-center">Realizar reserva</h1>
       <Formik enableReinitialize initialValues={initialValues} onSubmit={handleSubmit}>
-        {({ values, setFieldValue }) => (
+        {({ values }) => (
           <Form>
               <Stepper currentStep={values.step} steps={[
                 {
                   name: "Escolher horário",
                   details: "Escolha um horário dentro dos horários disponíveis",
-                  onClick: () => setFieldValue("step", 1),
                   element: <Schedules />
                 },
                 {
                   name: "Escolher mesa",
                   details: "Utilize nosso layout para selecionar a mesa",
-                  onClick: () => setFieldValue("step", 2),
                   element: <TableLayout />
                 },
                 {
                   name: "Observações",
                   details: "Outras informações",
-                  onClick: () => setFieldValue("step", 3),
                   element: <Observations />
                 }
               ]} />
